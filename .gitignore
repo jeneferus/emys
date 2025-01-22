@@ -1,28 +1,4 @@
-# Ignorar logs y directorios de logs
-*.log
-logs/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Ignorar dependencias y paquetes
-node_modules/
-dist/
-build/
-out/
-.next/
-
-# Ignorar archivos de configuración local
-*.local
-
-# Ignorar archivos de IDE
-.idea/
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 client/node_modules
 server/node_modules
 .env
