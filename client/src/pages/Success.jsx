@@ -3,55 +3,55 @@ import { Link } from 'react-router-dom';
 import Axios from '../utils/Axios';
 
 const Success = () => {
-    const [orderId, setOrderId] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(null);
+    const [orderId, setOrderId] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [successMessage, setSuccessMessage] = useState(null)
 
     // Recuperar el orderId del localStorage
     useEffect(() => {
-        const orderIdFromStorage = localStorage.getItem('paypalOrderId');
+        const orderIdFromStorage = localStorage.getItem('paypalOrderId')
 
         if (orderIdFromStorage) {
             setOrderId(orderIdFromStorage);
-            console.log("orderId recuperado del localStorage:", orderIdFromStorage);
+            console.log("orderId recuperado del localStorage:", orderIdFromStorage)
         } else {
-            setError("No se encontró orderId en el localStorage.");
-            setLoading(false);
+            setError("No se encontró orderId en el localStorage.")
+            setLoading(false)
         }
     }, []);
 
     // Confirmar el pago con el backend
     useEffect(() => {
         if (orderId) {
-            console.log("Confirmando el pago con orderId:", orderId);
+      
 
             Axios.get(`/api/order/confirm-paypal-payment?orderId=${orderId}`)
                 .then(response => {
-                    console.log("Respuesta del backend al confirmar el pago:", response.data);
+               
 
                     if (response.data.message === 'Pago confirmado y orden registrada exitosamente.') {
-                        setSuccessMessage("Pago confirmado exitosamente.");
+                        setSuccessMessage("Pago confirmado exitosamente.")
                     } else {
-                        setError("El pago no se confirmó correctamente. Respuesta del backend: " + JSON.stringify(response.data));
+                        setError("El pago no se confirmó correctamente. Respuesta del backend: " + JSON.stringify(response.data))
                     }
                 })
                 .catch(error => {
                     console.error("Error al confirmar el pago:", error);
 
                     if (error.response) {
-                        setError("Error del backend: " + JSON.stringify(error.response.data));
+                        setError("Error del backend: " + JSON.stringify(error.response.data))
                     } else if (error.request) {
-                        setError("No se recibió respuesta del backend. Error en la solicitud.");
+                        setError("No se recibió respuesta del backend. Error en la solicitud.")
                     } else {
-                        setError("Error en la configuración de la solicitud: " + error.message);
+                        setError("Error en la configuración de la solicitud: " + error.message)
                     }
                 })
                 .finally(() => {
-                    setLoading(false);
-                });
+                    setLoading(false)
+                })
         }
-    }, [orderId]);
+    }, [orderId])
 
     if (loading) {
         return (
@@ -70,7 +70,7 @@ const Success = () => {
                     Volver a Inicio
                 </Link>
             </div>
-        );
+        )
     }
 
     return (
@@ -86,7 +86,7 @@ const Success = () => {
                 Volver a Inicio
             </Link>
         </div>
-    );
-};
+    )
+}
 
-export default Success;
+export default Success
