@@ -18,47 +18,6 @@ const CheckoutPage = () => {
     const navigate = useNavigate();
 
     // Función para manejar el pago contra entrega (Cash on Delivery)
-    const handleCashOnDelivery = async () => {
-        if (!addressList[selectAddress]) {
-            toast.error("Please select an address");
-            return;
-        }
-    
-        const toastId = toast.loading("Processing your order...");
-    
-        try {
-            const response = await Axios({
-                ...SummaryApi.CashOnDeliveryOrder,
-                data: {
-                    list_items: cartItemsList,
-                    addressId: addressList[selectAddress]?._id,
-                    subTotalAmt: totalPrice,
-                    totalAmt: totalPrice,
-                },
-            });
-    
-            const { data: responseData } = response;
-    
-            if (responseData.success) {
-                toast.success(responseData.message);
-    
-                // Actualizar el carrito y las órdenes
-                if (fetchCartItem) fetchCartItem();
-                if (fetchOrder) fetchOrder();
-    
-                // Redirigir a la página de éxito
-                navigate('/success', {
-                    state: {
-                        text: "Order",
-                    },
-                });
-            }
-        } catch (error) {
-            AxiosToastError(error);
-        } finally {
-            toast.dismiss(toastId); // Limpiar el toast de carga
-        }
-    };
 
     // Función para manejar el pago con PayPal
     const handlePayPalPayment = async () => {

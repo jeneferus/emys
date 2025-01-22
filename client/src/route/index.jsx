@@ -82,7 +82,7 @@ const router = createBrowserRouter([
                         element: <Address />
                     },
                     {
-                        path: 'category',
+                        path: "category",
                         element: <AdminPermision><CategoryPage /></AdminPermision>
                     },
                     {
@@ -90,15 +90,15 @@ const router = createBrowserRouter([
                         element: <AdminPermision><SubCategoryPage /></AdminPermision>
                     },
                     {
-                        path: 'upload-product',
+                        path: "upload-product",
                         element: <AdminPermision><UploadProduct /></AdminPermision>
                     },
                     {
-                        path: 'product',
+                        path: "product",
                         element: <AdminPermision><ProductAdmin /></AdminPermision>
                     },
                     {
-                        path: 'allorders',
+                        path: "allorders",
                         element: <AdminPermision><AllOrdersPage /></AdminPermision>
                     }
                 ]
@@ -117,7 +117,7 @@ const router = createBrowserRouter([
                 element: <ProductDisplayPage />
             },
             {
-                path: 'cart',
+                path: "cart",
                 element: <CartMobile />
             },
             {
@@ -129,7 +129,7 @@ const router = createBrowserRouter([
                 element: <Success />
             },
             {
-                path: 'cancel',
+                path: "cancel",
                 element: <Cancel />
             },
             {
