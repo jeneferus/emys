@@ -124,14 +124,7 @@ const router = createBrowserRouter([
                 path: "checkout",
                 element: <CheckoutPage />
             },
-            {
-                path: "success",
-                element: <Success />
-            },
-            {
-                path: "cancel",
-                element: <Cancel />
-            },
+    
             {
                 path: "about-us", // Add About Us route
                 element: <AboutUs />
@@ -147,7 +140,15 @@ const router = createBrowserRouter([
             {
                 path: "SuccessMessage", // Add Shipping Policy route
                 element: <SuccessMessage />
-            }
+            }, 
+            {
+                path: "/success",
+                element: <Success />
+            },
+            {
+                path: "/cancel",
+                element: <Cancel />
+            },
         ]
     }
 ]);
