@@ -1,31 +1,16 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "server/index.js",  
-        "use": "@vercel/node"
-      },
-      {
-        "src": "cliente/package.json",  
-        "use": "@vercel/static-build"
-      }
+    "version" : 2,
+    "name" : "EMY'S SHOOP",
+    "builds" : [
+        {
+            "src" : "./index.js",
+            "use" : "@vercel/node"
+        }
     ],
-    "routes": [
-      {
-        "src": "/api/(.*)",  
-        "dest": "/server/index.js"
-      },
-      {
-        "src": "/cancel",  
-        "dest": "/cliente/index.html"
-      },
-      {
-        "src": "/success",  
-        "dest": "/cliente/index.html"
-      },
-      {
-        "src": "/(.*)",  
-        "dest": "/cliente/index.html"
-      }
+    "routes" : [
+        {
+            "src" : "/(.*)",
+            "dest" : "/"
+        }
     ]
-  }
+}     
