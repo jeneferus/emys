@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+     "vercel-build": "react-scripts build"
   },
   "author": "ibra",
   "license": "ISC",
