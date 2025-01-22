@@ -14,9 +14,9 @@ const Success = () => {
 
         if (orderIdFromStorage) {
             setOrderId(orderIdFromStorage);
-            console.log("orderId recuperado del localStorage:", orderIdFromStorage)
+      
         } else {
-            setError("No se encontró orderId en el localStorage.")
+            setError("No orderId was found in localStorage.")
             setLoading(false)
         }
     }, []);
@@ -30,21 +30,21 @@ const Success = () => {
                 .then(response => {
                
 
-                    if (response.data.message === 'Pago confirmado y orden registrada exitosamente.') {
-                        setSuccessMessage("Pago confirmado exitosamente.")
+                    if (response.data.message === 'Payment confirmed and order successfully registered.') {
+                        setSuccessMessage("Payment successfully confirmed.")
                     } else {
-                        setError("El pago no se confirmó correctamente. Respuesta del backend: " + JSON.stringify(response.data))
+                        setError("The payment was not successfully confirmed. Backend response:" + JSON.stringify(response.data))
                     }
                 })
                 .catch(error => {
-                    console.error("Error al confirmar el pago:", error);
+                    console.error("Error confirming payment:", error);
 
                     if (error.response) {
-                        setError("Error del backend: " + JSON.stringify(error.response.data))
+                        setError("Backend error: " + JSON.stringify(error.response.data))
                     } else if (error.request) {
-                        setError("No se recibió respuesta del backend. Error en la solicitud.")
+                        setError("No response received from the backend. Request error.")
                     } else {
-                        setError("Error en la configuración de la solicitud: " + error.message)
+                        setError("Request configuration error: " + error.message)
                     }
                 })
                 .finally(() => {
@@ -67,7 +67,7 @@ const Success = () => {
                 <h1 className='text-red-800 font-bold text-lg text-center'>Error</h1>
                 <p className='text-red-800 text-center'>{error}</p>
                 <Link to="/" className="border border-red-900 text-red-900 hover:bg-red-900 hover:text-white transition-all px-4 py-1">
-                    Volver a Inicio
+                Go back to Home
                 </Link>
             </div>
         )
@@ -75,15 +75,15 @@ const Success = () => {
 
     return (
         <div className='m-2 w-full max-w-md bg-green-200 p-4 py-5 rounded mx-auto flex flex-col justify-center items-center gap-5'>
-            <h1 className='text-green-800 font-bold text-lg text-center'>¡Pago exitoso!</h1>
+            <h1 className='text-green-800 font-bold text-lg text-center'>Payment successful!</h1>
             <p className='text-green-800 font-bold text-lg text-center'>
-                Tu orden con ID {orderId} ha sido procesada correctamente.
+            Your order with ID {orderId} has been successfully processed.
             </p>
             {successMessage && (
                 <p className='text-green-800 text-center'>{successMessage}</p>
             )}
             <Link to="/" className="border border-green-900 text-green-900 hover:bg-green-900 hover:text-white transition-all px-4 py-1">
-                Volver a Inicio
+            Go back to Home
             </Link>
         </div>
     )

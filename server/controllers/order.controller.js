@@ -6,7 +6,7 @@ import ProductModel from "../models/product.model.js";
 import paypal from "@paypal/checkout-server-sdk";
 
 // Configuración del entorno de PayPal (Sandbox para pruebas)
-const environment = new paypal.core.SandboxEnvironment(
+const environment = new paypal.core.LiveEnvironment(
   process.env.PAYPAL_CLIENT_ID,
   process.env.PAYPAL_CLIENT_SECRET
 );
@@ -131,18 +131,18 @@ export const confirmPayPalPayment = async (req, res) => {
 
     // Verificar si la orden se actualizó correctamente
     if (!updatedOrder) {
-      return res.status(404).json({ message: 'Orden no encontrada en la base de datos.' });
+      return res.status(404).json({ message: 'Order not found in the database.' });
     }
 
     // Responder con la orden actualizada
     return res.status(200).json({
-      message: 'Pago confirmado y orden registrada exitosamente.',
+      message: 'Payment confirmed and order successfully registered.',
       order: updatedOrder,
     });
   } catch (error) {
     console.error('Error en confirmPayPalPayment:', error.message);
     return res.status(500).json({
-      message: error.message || 'Error al confirmar el pago',
+      message: error.message || 'Error confirming payment',
     });
   }
 };
