@@ -2,18 +2,30 @@
     "version": 2,
     "builds": [
       {
-        "src": "index.js",
+        "src": "server/index.js",  
         "use": "@vercel/node"
+      },
+      {
+        "src": "cliente/package.json",  
+        "use": "@vercel/static-build"
       }
     ],
     "routes": [
       {
-        "src": "/api/(.*)",
-        "dest": "/"
+        "src": "/api/(.*)",  
+        "dest": "/server/index.js"
       },
       {
-        "src": "/(.*)",
-        "dest": "/public/$1"
+        "src": "/cancel",  
+        "dest": "/cliente/index.html"
+      },
+      {
+        "src": "/success",  
+        "dest": "/cliente/index.html"
+      },
+      {
+        "src": "/(.*)",  
+        "dest": "/cliente/index.html"
       }
     ]
   }
