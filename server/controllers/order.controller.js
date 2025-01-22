@@ -248,8 +248,8 @@ export const createPayPalOrder = async (req, res) => {
       application_context: {
         brand_name: 'Emys SHoop', // Limita a 127 caracteres
         user_action: 'PAY_NOW',
-        return_url: `${process.env.FRONTEND_URL}/success`, // URL de retorno
-        cancel_url: `${process.env.FRONTEND_URL}/cancel` // URL de cancelación
+        return_url: `https://emys-6lgv.vercel.app/success`, // URL de retorno
+        cancel_url: `https://emys-6lgv.vercel.app/cancel` // URL de cancelación
       }
     });
 
