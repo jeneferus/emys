@@ -4,7 +4,8 @@ import OrderModel from "../models/order.model.js";
 import UserModel from "../models/user.model.js";
 import ProductModel from "../models/product.model.js";
 import paypal from "@paypal/checkout-server-sdk";
-
+import { config } from "dotenv";
+config();
 // Configuración del entorno de PayPal (Sandbox para pruebas)
 const environment = new paypal.core.LiveEnvironment(
   process.env.PAYPAL_CLIENT_ID,
