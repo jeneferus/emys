@@ -20,7 +20,6 @@ import contactRoutes from  './route/contactRoutes.js'; // Importar las rutas
 const app = express();
 
 const allowedOrigins = ['https://www.emysshoop.store', 'https://emys-6lgv.vercel.app'];
-
 app.use(cors({
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
