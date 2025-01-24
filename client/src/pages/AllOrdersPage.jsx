@@ -10,7 +10,6 @@ import ConfirmBox from '../components/CofirmBox';
 import EditOrderModal from '../components/EditOrderModal';
 import OrderDetailsModal from '../components/OrderDetailsModal';
 import toast from 'react-hot-toast';
-import Loading from '../components/Loading';
 
 const AllOrdersPage = () => {
   const [data, setData] = useState([]);
@@ -79,11 +78,7 @@ const AllOrdersPage = () => {
   const columns = [
     columnHelper.accessor('orderId', {
       header: "Order ID",
-      cell: ({ row }) => (
-        <div className='whitespace-nowrap'>
-          {truncateText(row.original.orderId, 8)}
-        </div>
-      ),
+      cell: ({ row }) => truncateText(row.original.orderId, 8),
     }),
     columnHelper.accessor('userId.name', {
       header: "User",
@@ -112,7 +107,7 @@ const AllOrdersPage = () => {
     columnHelper.accessor('_id', {
       header: "Actions",
       cell: ({ row }) => (
-        <div className='flex items-center justify-center gap-3'>
+        <div className='flex gap-3'>
           <button
             onClick={() => {
               setOpenDetailsModal(true);
@@ -173,8 +168,7 @@ const AllOrdersPage = () => {
 
   return (
     <section className='p-4'>
-      <div className='p-2 bg-white shadow-md flex items-center justify-between'>
-       
+      <div className='p-2 bg-white shadow-md'>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'>
           <input
             type='text'
@@ -224,14 +218,13 @@ const AllOrdersPage = () => {
 
       {/* Tabla de pedidos */}
       <div className='mt-4 overflow-auto w-full max-w-[95vw]'>
-        {loading ? (
-          <Loading /> // Mostrar indicador de carga
-        ) : (
+        <div style={{ minWidth: '800px' }}> {/* Ancho mínimo para la tabla */}
           <DisplayTable
             data={data}
             column={columns}
+            loading={loading}
           />
-        )}
+        </div>
       </div>
 
       {openDeleteConfirmBox && (
