@@ -51,78 +51,84 @@ const EditOrderModal = ({ close, data, fetchAllOrders }) => {
 
     return (
         <section className='fixed top-0 right-0 bottom-0 left-0 bg-neutral-800 bg-opacity-70 z-50 flex items-center justify-center p-4'>
-            <div className='w-full max-w-5xl bg-white p-4 rounded'>
+            <div className='w-full max-w-[95%] md:max-w-3xl lg:max-w-4xl bg-white p-4 rounded-lg overflow-y-auto max-h-[90vh]'>
                 <div className='flex items-center justify-between gap-3'>
-                    <h1 className='font-semibold'>Edit Order</h1>
-                    <button onClick={close}>
+                    <h1 className='font-semibold text-lg'>Edit Order</h1>
+                    <button onClick={close} className='hover:text-red-600'>
                         <IoClose size={25} />
                     </button>
                 </div>
-                <form className='my-3 grid gap-3' onSubmit={handleSubmitOrder}>
-                    <div className='grid gap-1'>
-                        <label htmlFor='orderId'>Order ID</label>
-                        <input
-                            id='orderId'
-                            name='orderId'
-                            value={orderData.orderId}
-                            onChange={handleChange}
-                            className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
-                            readOnly
-                        />
+                <form className='my-3 grid gap-4' onSubmit={handleSubmitOrder}>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                        <div className='grid gap-1'>
+                            <label htmlFor='orderId' className='font-medium'>Order ID</label>
+                            <input
+                                id='orderId'
+                                name='orderId'
+                                value={orderData.orderId}
+                                onChange={handleChange}
+                                className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
+                                readOnly
+                            />
+                        </div>
+                        <div className='grid gap-1'>
+                            <label htmlFor='userId' className='font-medium'>User</label>
+                            <input
+                                id='userId'
+                                name='userId'
+                                value={orderData.userId.name}
+                                onChange={handleChange}
+                                className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
+                                readOnly
+                            />
+                        </div>
                     </div>
-                    <div className='grid gap-1'>
-                        <label htmlFor='userId'>User</label>
-                        <input
-                            id='userId'
-                            name='userId'
-                            value={orderData.userId.name}
-                            onChange={handleChange}
-                            className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
-                            readOnly
-                        />
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                        <div className='grid gap-1'>
+                            <label htmlFor='totalAmt' className='font-medium'>Total Amount</label>
+                            <input
+                                id='totalAmt'
+                                name='totalAmt'
+                                value={orderData.totalAmt}
+                                onChange={handleChange}
+                                className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
+                            />
+                        </div>
+                        <div className='grid gap-1'>
+                            <label htmlFor='status' className='font-medium'>Status</label>
+                            <select
+                                id='status'
+                                name='status'
+                                value={orderData.status}
+                                onChange={handleChange}
+                                className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
+                            >
+                                <option value="PENDING">Pending</option>
+                                <option value="DELIVERED">Delivered</option>
+                                <option value="CANCELLED">Cancelled</option>
+                            </select>
+                        </div>
                     </div>
-                    <div className='grid gap-1'>
-                        <label htmlFor='totalAmt'>Total Amount</label>
-                        <input
-                            id='totalAmt'
-                            name='totalAmt'
-                            value={orderData.totalAmt}
-                            onChange={handleChange}
-                            className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
-                        />
-                    </div>
-                    <div className='grid gap-1'>
-                        <label htmlFor='status'>Status</label>
-                        <select
-                            id='status'
-                            name='status'
-                            value={orderData.status}
-                            onChange={handleChange}
-                            className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
-                        >
-                            <option value="PENDING">Pending</option>
-                            <option value="DELIVERED">Delivered</option>
-                            <option value="CANCELLED">Cancelled</option>
-                        </select>
-                    </div>
-                    <div className='grid gap-1'>
-                        <label htmlFor='payment_status'>Payment Status</label>
-                        <select
-                            id='payment_status'
-                            name='payment_status'
-                            value={orderData.payment_status}
-                            onChange={handleChange}
-                            className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
-                        >
-                            <option value="CASH ON DELIVERY">Cash on Delivery</option>
-                            <option value="PAID">Paid</option>
-                            <option value="PENDING">Pending</option>
-                        </select>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                        <div className='grid gap-1'>
+                            <label htmlFor='payment_status' className='font-medium'>Payment Status</label>
+                            <select
+                                id='payment_status'
+                                name='payment_status'
+                                value={orderData.payment_status}
+                                onChange={handleChange}
+                                className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
+                            >
+                                <option value="CASH ON DELIVERY">Cash on Delivery</option>
+                                <option value="PAID">Paid</option>
+                                <option value="PENDING">Pending</option>
+                            </select>
+                        </div>
                     </div>
                     <button
                         className={`px-4 py-2 border
                             ${orderData?.totalAmt && orderData?.status ? "bg-primary-200 hover:bg-primary-100" : "bg-gray-200"}
-                            font-semibold
+                            font-semibold rounded
                         `}
                         type='submit'
                     >

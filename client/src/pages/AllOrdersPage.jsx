@@ -217,7 +217,8 @@ const AllOrdersPage = () => {
         </div>
       </div>
 
-      <div className='mt-4' style={{ overflowX: 'auto' }}>
+      {/* Tabla de pedidos */}
+      <div className='mt-4 overflow-auto w-full max-w-[95vw]'>
         <DisplayTable
           data={data}
           column={columns}
