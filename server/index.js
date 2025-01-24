@@ -19,7 +19,7 @@ import panalroute from './route/panal.route.js';
 import contactRoutes from  './route/contactRoutes.js'; // Importar las rutas
 const app = express();
 
-const allowedOrigins = ['https://www.emysshoop.store', 'https://emys-6lgv.vercel.app'];
+const allowedOrigins = process.env.FRONTEND_URL
 app.use(cors({
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],

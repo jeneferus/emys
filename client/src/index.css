@@ -54,3 +54,9 @@ body{
       padding: 20px;
     }
   }
+  @media (max-width: 768px) {
+    body {
+        font-weight: 400; /* Aumenta el grosor del texto para móviles */
+        font-size: 16px; /* Ajusta el tamaño de la fuente para móviles */
+    }
+}
