@@ -6,51 +6,66 @@ const Footer = () => {
   return (
     <footer className='border-t bg-gray-50 py-8'>
       <div className='container mx-auto px-4'>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left'>
-          {/* Company Information */}
-          <div>
-            <h3 className='text-lg font-semibold mb-4'>Emy's Shop</h3>
-            <p className='text-gray-600'>
-              Discover the best products for every need. We are committed to quality and exceptional customer service.
-            </p>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+          {/* Follow Us (Más a la izquierda) */}
+          <div className='text-left'>
+            <h3 className='text-lg font-semibold mb-4'>Follow Us</h3>
+            <div className='flex gap-4'>
+              <a
+                href='https://facebook.com'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='text-gray-600 hover:text-primary-500 transition duration-300'
+              >
+                <FaFacebook className='text-xl' />
+              </a>
+              <a
+                href='https://instagram.com'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='text-gray-600 hover:text-primary-500 transition duration-300'
+              >
+                <FaInstagram className='text-xl' />
+              </a>
+              <a
+                href='https://linkedin.com'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='text-gray-600 hover:text-primary-500 transition duration-300'
+              >
+                <FaLinkedin className='text-xl' />
+              </a>
+            </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
+          {/* Quick Links (Centrado) */}
+          <div className='text-center'>
             <h3 className='text-lg font-semibold mb-4'>Quick Links</h3>
             <ul className='space-y-2'>
               <li>
-                <Link to='/about-us' className='text-gray-600 hover:text-primary-100'>
+                <Link to='/about-us' className='text-gray-600 hover:text-primary-500 transition duration-300'>
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to='/shipping-policy' className='text-gray-600 hover:text-primary-100'>
+                <Link to='/shipping-policy' className='text-gray-600 hover:text-primary-500 transition duration-300'>
                   Shipping Policy
                 </Link>
               </li>
               <li>
-                <Link to='/contactUsPage' className='text-gray-600 hover:text-primary-100'>
+                <Link to='/contactUsPage' className='text-gray-600 hover:text-primary-500 transition duration-300'>
                   Contact Us
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Social Media Links */}
-          <div>
-            <h3 className='text-lg font-semibold mb-4'>Follow Us</h3>
-            <div className='flex justify-center md:justify-start gap-4 text-2xl'>
-              <a href='' target='_blank' rel='noopener noreferrer' className='text-gray-600 hover:text-primary-100'>
-                <FaFacebook />
-              </a>
-              <a href='' target='_blank' rel='noopener noreferrer' className='text-gray-600 hover:text-primary-100'>
-                <FaInstagram />
-              </a>
-              <a href='' target='_blank' rel='noopener noreferrer' className='text-gray-600 hover:text-primary-100'>
-                <FaLinkedin />
-              </a>
-            </div>
+          {/* Emy's Shop (Más a la derecha, texto más corto) */}
+          <div className='text-right'>
+            <h3 className='text-lg font-semibold mb-4'>Emy's Shop</h3>
+            <p className='text-gray-600'>
+              Quality products, exceptional service.
+            </p>
           </div>
         </div>
 
