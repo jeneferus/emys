@@ -12,7 +12,7 @@ const Footer = () => {
             <h3 className='text-lg font-semibold mb-4'>Follow Us</h3>
             <div className='flex gap-4'>
               <a
-                href='https://facebook.com'
+                href='https://www.facebook.com/profile.php?id=61571577703551'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='text-gray-600 hover:text-primary-500 transition duration-300'
@@ -20,7 +20,7 @@ const Footer = () => {
                 <FaFacebook className='text-xl' />
               </a>
               <a
-                href='https://instagram.com'
+                href=''
                 target='_blank'
                 rel='noopener noreferrer'
                 className='text-gray-600 hover:text-primary-500 transition duration-300'
@@ -28,7 +28,7 @@ const Footer = () => {
                 <FaInstagram className='text-xl' />
               </a>
               <a
-                href='https://linkedin.com'
+                href=''
                 target='_blank'
                 rel='noopener noreferrer'
                 className='text-gray-600 hover:text-primary-500 transition duration-300'
