@@ -5,13 +5,16 @@ import {
     getOrderDetailsController,
     confirmPayPalPayment,
     handlePayPalCancel,
-    createPayPalOrder
+    createPayPalOrder,
+    createCulqiOrder
 } from '../controllers/order.controller.js';
 
 const orderRouter = Router();
 
 // Ruta para crear una orden contra reembolso
 orderRouter.post("/cash-on-delivery", auth, CashOnDeliveryOrderController);
+
+orderRouter.post("/create-culqi-order", auth, createCulqiOrder);
 
 // Ruta para manejar la cancelación de PayPal (GET porque PayPal redirige aquí)
 orderRouter.get('/handle-paypal-cancel', auth, handlePayPalCancel);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGlobalContext } from '../provider/GlobalProvider';
 import { DisplayPriceInUSD } from '../utils/DisplayPriceInUSD';
 import AddAddress from '../components/AddAddress';
@@ -61,6 +61,89 @@ const CheckoutPage = () => {
             toast.dismiss(toastId); // Limpiar el toast de carga
         }
     };
+
+
+    useEffect(() => {
+        if (typeof window.Culqi !== 'undefined') {
+            console.log("Culqi SDK cargado correctamente");
+            window.Culqi.publicKey = import.meta.env.VITE_CULQI_PUBLIC_KEY;
+        } else {
+            console.error("Culqi SDK no está cargado correctamente.");
+        }
+    }, []);
+
+    // Función para manejar el pago con Culqi
+ const handleCulqiPayment = async () => {
+    if (!addressList[selectAddress]) {
+        toast.error("Please select an address");
+        return;
+    }
+
+    // Verificar si Culqi está cargado
+    if (typeof window.Culqi === 'undefined') {
+        toast.error("Culqi SDK no está cargado correctamente.");
+        return;
+    }
+
+    // Configurar Culqi
+    window.Culqi.settings({
+        title: 'Emys SHoop',
+        currency: 'PEN', // Moneda en soles peruanos
+        description: 'Compra en Emys SHoop',
+        amount: totalPrice * 100, // Monto en céntimos
+    });
+
+    // Abrir el formulario de Culqi
+    window.Culqi.open();
+
+    // Escuchar el evento 'token' para obtener el token generado por Culqi
+    window.Culqi.on('token', async (token) => {
+        console.log("Token generado:", token);
+        const toastId = toast.loading("Processing payment with Culqi...");
+    
+        try {
+            const response = await Axios({
+                ...SummaryApi.createCulqiOrder,
+                data: {
+                    token: token.id,
+                    list_items: cartItemsList,
+                    addressId: addressList[selectAddress]._id,
+                },
+            });
+    
+            const { data: responseData } = response;
+            if (responseData.success) {
+                toast.success("Payment successful!");
+                navigate('/order-success');
+            } else {
+                toast.error("Failed to process payment with Culqi");
+            }
+        } catch (error) {
+            console.error("Error en handleCulqiPayment:", error);
+            if (error.response) {
+                toast.error(error.response.data.message || "Error en la API");
+            } else if (error.request) {
+                toast.error("No se recibió respuesta del servidor");
+            } else {
+                toast.error("Error interno al procesar la solicitud");
+            }
+        } finally {
+            toast.dismiss(toastId);
+        }
+    });
+    
+    window.Culqi.on('error', (error) => {
+        console.error("Culqi error:", error);
+        toast.error("Error al procesar el pago con Culqi");
+    });
+
+    // Escuchar el evento 'error' para manejar errores de Culqi
+    window.Culqi.on('error', (error) => {
+        console.error("Culqi error:", error);
+        toast.error("Error al procesar el pago con Culqi");
+    });
+};
+
 
     return (
         <section className='bg-blue-50'>
@@ -134,12 +217,10 @@ const CheckoutPage = () => {
                     <div className='w-full flex flex-col gap-4'>
                         <button
                             className='py-2 px-4 bg-green-600 hover:bg-green-700 rounded text-white font-semibold'
-                            onClick={handlePayPalPayment}
+                            onClick={handleCulqiPayment}
                         >
-                            Pay with PayPal
+                            Pay with Culqi
                         </button>
-
-               
                     </div>
                 </div>
             </div>
@@ -151,5 +232,6 @@ const CheckoutPage = () => {
         </section>
     );
 };
+
 
 export default CheckoutPage;

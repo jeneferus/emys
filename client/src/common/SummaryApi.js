@@ -194,7 +194,11 @@ const SummaryApi = {
         url: '/api/contactus', // Ruta del backend para el formulario de contacto
         method: 'post', // Método HTTP
     },
-    
+   
+    createCulqiOrder: {
+        url: '/api/create-culqi-order', // Ruta del backend para 
+        method: 'post', // Método HTTP
+    },
 };
 
 export default SummaryApi;
