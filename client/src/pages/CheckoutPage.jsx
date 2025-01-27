@@ -8,7 +8,7 @@ import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-
+import GooglePayComponent from '../components/GooglePayComponent'; // Importa el componente de Google Pay
 const CheckoutPage = () => {
     const { notDiscountTotalPrice, totalPrice, totalQty, fetchCartItem, fetchOrder } = useGlobalContext();
     const [openAddress, setOpenAddress] = useState(false);
@@ -59,6 +59,63 @@ const CheckoutPage = () => {
             }
         } finally {
             toast.dismiss(toastId); // Limpiar el toast de carga
+        }
+    };
+    const handleGooglePaySuccess = async (paymentData) => {
+        // Verifica que se haya seleccionado una dirección válida
+        if (!addressList[selectAddress] || !addressList[selectAddress]._id) {
+            toast.error("Please select a valid address");
+            return;
+        }
+    
+        const toastId = toast.loading("Processing Google Pay...");
+    
+        try {
+            // Imprime los datos que se enviarán al servidor para verificación
+            console.log({
+                paymentData,
+                userId: currentUser._id,
+                list_items: cartItemsList,
+                totalAmt: totalPrice,
+                addressId: addressList[selectAddress]._id,
+                subTotalAmt: notDiscountTotalPrice,
+            });
+    
+            // Realiza la solicitud HTTP
+            const response = await Axios({
+                ...SummaryApi.googlePay,
+                data: {
+                    paymentData,
+                    userId: currentUser._id,
+                    list_items: cartItemsList,
+                    totalAmt: totalPrice,
+                    addressId: addressList[selectAddress]._id,
+                    subTotalAmt: notDiscountTotalPrice,
+                },
+            });
+    
+            const { data: responseData } = response;
+    
+            // Verifica la respuesta del servidor
+            console.log("Respuesta del servidor:", responseData);
+    
+            if (responseData.success) {
+                toast.success("Payment successful!");
+                navigate('/success'); // Redirige a la página de éxito
+            } else {
+                toast.error(responseData.message || "Failed to process payment");
+            }
+        } catch (error) {
+            console.error("Error en handleGooglePaySuccess:", error);
+            if (error.response) {
+                toast.error(`Error: ${error.response.data.message || "Failed to process payment"}`);
+            } else if (error.request) {
+                toast.error("No response from server. Please try again later.");
+            } else {
+                toast.error("Error setting up payment request. Please check your connection.");
+            }
+        } finally {
+            toast.dismiss(toastId); // Limpia el toast de carga
         }
     };
 
@@ -139,7 +196,11 @@ const CheckoutPage = () => {
                             Pay with PayPal
                         </button>
 
-               
+                        <GooglePayComponent
+                            totalAmt={totalPrice}
+                            onSuccess={handleGooglePaySuccess}
+                            onError={(error) => toast.error("Error en Google Pay: " + error.message)}
+                        />
                     </div>
                 </div>
             </div>
