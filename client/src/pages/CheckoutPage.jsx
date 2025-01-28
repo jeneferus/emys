@@ -94,11 +94,11 @@ const CheckoutPage = () => {
         // Abrir el formulario de Culqi
         window.Culqi.open();
     
-        // Escuchar el evento 'token'
+        // Escuchar el evento 'token' para obtener el token generado por Culqi
         window.Culqi.on('token', async (token) => {
             console.log("Token generado:", token);
             const toastId = toast.loading("Procesando pago con Culqi...");
-    
+        
             try {
                 const response = await Axios({
                     ...SummaryApi.createCulqiOrder,
@@ -108,7 +108,7 @@ const CheckoutPage = () => {
                         addressId: addressList[selectAddress]._id,
                     },
                 });
-    
+        
                 const { data: responseData } = response;
                 if (responseData.success) {
                     toast.success("¡Pago exitoso!");
@@ -118,16 +118,27 @@ const CheckoutPage = () => {
                 }
             } catch (error) {
                 console.error("Error en handleCulqiPayment:", error);
-                toast.error(error.message || "Error al procesar el pago");
+                if (error.response) {
+                    toast.error(error.response.data.message || "Error en la API");
+                } else if (error.request) {
+                    toast.error("No se recibió respuesta del servidor");
+                } else {
+                    toast.error("Error interno al procesar la solicitud");
+                }
             } finally {
                 toast.dismiss(toastId);
             }
         });
-    
-        // Escuchar el evento 'error'
+        
         window.Culqi.on('error', (error) => {
             console.error("Culqi error:", error);
-            toast.error(`Error al procesar el pago con Culqi: ${error.user_message}`);
+            toast.error("Error al procesar el pago con Culqi");
+        });
+    
+        // Escuchar el evento 'error' para manejar errores de Culqi
+        window.Culqi.on('error', (error) => {
+            console.error("Culqi error:", error);
+            toast.error("Error al procesar el pago con Culqi");
         });
     };
 

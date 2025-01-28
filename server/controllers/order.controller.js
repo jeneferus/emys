@@ -353,15 +353,12 @@ export const createCulqiOrder = async (req, res) => {
           return acc + (product.price * (1 - product.discount / 100) * item.quantity);
       }, 0);
 
-      // Convertir el monto a céntimos
-      const amountInCents = Math.round(totalAmount * 100);
-
       // Crear el cargo en Culqi
       const charge = await culqi.charges.create({
-          amount: amountInCents, // Monto en céntimos
-          currency_code: "PEN", // Moneda en soles peruanos
-          email: req.userEmail, // Email del usuario
-          source_id: token, // Token generado por Culqi
+          amount: totalAmount * 100, // Culqi espera el monto en céntimos
+          currency_code: "PEN", // Moneda (PEN para soles peruanos)
+          email: req.userEmail, // Email del usuario (debes obtenerlo desde el token JWT o la base de datos)
+          source_id: token, // Token generado por Culqi en el frontend
           description: "Compra en Emys SHoop",
       });
 
