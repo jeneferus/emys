@@ -340,9 +340,6 @@ export const createCulqiOrder = async (req, res) => {
       const { token, list_items, addressId } = req.body;
       const userId = req.userId;
 
-      // Loggear los datos recibidos en formato JSON
-     //  console.log("Datos recibidos en el backend:", JSON.stringify({ token, list_items, addressId, userId }, null, 2));
-
       // Validación de datos
       if (!token) {
           return res.status(400).json({ message: "Token de Culqi es requerido." });
@@ -358,20 +355,14 @@ export const createCulqiOrder = async (req, res) => {
           return acc + (product.price * (1 - product.discount / 100) * item.quantity);
       }, 0);
 
-      // Loggear el monto total en formato JSON
-      // console.log("Monto total calculado:", JSON.stringify({ totalAmount }, null, 2));
-
       // Crear el cargo en Culqi
       const charge = await Culqi.charges.create({
           amount: totalAmount * 100, // Culqi espera el monto en céntimos
           currency_code: "PEN", // Moneda (PEN para soles peruanos)
-          email: req.userEmail, // Email del usuario
+          email: req.userEmail, // Email del usuario (debes obtenerlo desde el token JWT o la base de datos)
           source_id: token, // Token generado por Culqi en el frontend
           description: "Compra en Emys SHoop",
       });
-
-      // Loggear el cargo creado en Culqi en formato JSON
-     //  console.log("Cargo creado en Culqi:", JSON.stringify(charge, null, 2));
 
       // Guardar la orden en la base de datos
       const order = new OrderModel({
@@ -401,9 +392,6 @@ export const createCulqiOrder = async (req, res) => {
 
       await order.save();
 
-      // Loggear la orden guardada en la base de datos en formato JSON
-      // console.log("Orden guardada en la base de datos:", JSON.stringify(order, null, 2));
-
       // Limpiar el carrito del usuario
       await CartProductModel.deleteMany({ userId: userId });
       await UserModel.updateOne({ _id: userId }, { shopping_cart: [] });
@@ -416,7 +404,7 @@ export const createCulqiOrder = async (req, res) => {
           success: true,
       });
   } catch (error) {
-      // console.error("Error en createCulqiOrder:", JSON.stringify({ message: error.message, stack: error.stack }, null, 2));
+      console.error("Error en createCulqiOrder:", error.message);
       return res.status(500).json({
           message: error.message || "Error al procesar el pago con Culqi",
           error: true,
