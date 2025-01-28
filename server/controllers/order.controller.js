@@ -6,7 +6,7 @@ import ProductModel from "../models/product.model.js";
 import paypal from "@paypal/checkout-server-sdk";
 import { config } from "dotenv";
 config();
-import Culqi from "../config/Culqi.js";
+import culqi from "../config/culqi.js";
 // Configuración del entorno de PayPal (Sandbox para pruebas)
 const environment = new paypal.core.LiveEnvironment(
   process.env.PAYPAL_CLIENT_ID,
@@ -356,7 +356,7 @@ export const createCulqiOrder = async (req, res) => {
       }, 0);
 
       // Crear el cargo en Culqi
-      const charge = await Culqi.charges.create({
+      const charge = await culqi.charges.create({
           amount: totalAmount * 100, // Culqi espera el monto en céntimos
           currency_code: "PEN", // Moneda (PEN para soles peruanos)
           email: req.userEmail, // Email del usuario (debes obtenerlo desde el token JWT o la base de datos)
