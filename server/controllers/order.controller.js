@@ -333,8 +333,6 @@ export const createPayPalOrder = async (req, res) => {
 
 
 
-
-
 export const createCulqiOrder = async (req, res) => {
   try {
       const { token, list_items, addressId } = req.body;
@@ -359,7 +357,7 @@ export const createCulqiOrder = async (req, res) => {
       const charge = await culqi.charges.create({
           amount: totalAmount * 100, // Culqi espera el monto en céntimos
           currency_code: "PEN", // Moneda (PEN para soles peruanos)
-          email: req.userEmail, // Email del usuario (debes obtenerlo desde el token JWT o la base de datos)
+          email: req.userEmail, // Email del usuario
           source_id: token, // Token generado por Culqi en el frontend
           description: "Compra en Emys SHoop",
       });
@@ -397,7 +395,7 @@ export const createCulqiOrder = async (req, res) => {
       await UserModel.updateOne({ _id: userId }, { shopping_cart: [] });
 
       // Responder con la orden creada
-      return res.status(200).json({
+      return res.status(201).json({
           message: "Pago procesado exitosamente con Culqi",
           order: order,
           error: false,

@@ -97,7 +97,7 @@ const CheckoutPage = () => {
         window.Culqi.token = async (token) => {
             console.log("Token generado:", token);
             const toastId = toast.loading("Procesando pago con Culqi...");
-
+        
             try {
                 const response = await Axios({
                     ...SummaryApi.createCulqiOrder,
@@ -107,10 +107,10 @@ const CheckoutPage = () => {
                         addressId: addressList[selectAddress]._id,
                     },
                 });
-
+        
                 const { data: responseData } = response;
                 console.log("Respuesta de la API:", responseData); 
-
+        
                 if (responseData.success) {
                     toast.success("¡Pago exitoso!");
                     navigate('/success');
@@ -210,12 +210,7 @@ const CheckoutPage = () => {
                         </div>
                     </div>
                     <div className='w-full flex flex-col gap-4'>
-                        <button
-                            className='py-2 px-4 bg-green-600 hover:bg-green-700 rounded text-white font-semibold'
-                            onClick={handleCulqiPayment}
-                        >
-                            Pay with Culqi
-                        </button>
+          
                         <button
                             className='py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold'
                             onClick={handlePayPalPayment}
