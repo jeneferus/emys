@@ -17,8 +17,6 @@ const CheckoutPage = () => {
     const cartItemsList = useSelector(state => state.cartItem.cart);
     const navigate = useNavigate();
 
-    // Función para manejar el pago contra entrega (Cash on Delivery)
-
     // Función para manejar el pago con PayPal
     const handlePayPalPayment = async () => {
         if (!addressList[selectAddress]) {
@@ -62,88 +60,82 @@ const CheckoutPage = () => {
         }
     };
 
-
     useEffect(() => {
+        // Verificar si Culqi está cargado
         if (typeof window.Culqi !== 'undefined') {
             console.log("Culqi SDK cargado correctamente");
             window.Culqi.publicKey = import.meta.env.VITE_CULQI_PUBLIC_KEY;
         } else {
             console.error("Culqi SDK no está cargado correctamente.");
+            toast.error("Culqi SDK no está cargado correctamente.");
         }
     }, []);
-
-    // Función para manejar el pago con Culqi
- const handleCulqiPayment = async () => {
-    if (!addressList[selectAddress]) {
-        toast.error("Please select an address");
-        return;
-    }
-
-    // Verificar si Culqi está cargado
-    if (typeof window.Culqi === 'undefined') {
-        toast.error("Culqi SDK no está cargado correctamente.");
-        return;
-    }
-
-    // Configurar Culqi
-    window.Culqi.settings({
-        title: 'Emys SHoop',
-        currency: 'PEN', // Moneda en soles peruanos
-        description: 'Compra en Emys SHoop',
-        amount: totalPrice * 100, // Monto en céntimos
-    });
-
-    // Abrir el formulario de Culqi
-    window.Culqi.open();
-
-    // Escuchar el evento 'token' para obtener el token generado por Culqi
-    window.Culqi.on('token', async (token) => {
-        console.log("Token generado:", token);
-        const toastId = toast.loading("Processing payment with Culqi...");
     
-        try {
-            const response = await Axios({
-                ...SummaryApi.createCulqiOrder,
-                data: {
-                    token: token.id,
-                    list_items: cartItemsList,
-                    addressId: addressList[selectAddress]._id,
-                },
-            });
-    
-            const { data: responseData } = response;
-            if (responseData.success) {
-                toast.success("Payment successful!");
-                navigate('/order-success');
-            } else {
-                toast.error("Failed to process payment with Culqi");
-            }
-        } catch (error) {
-            console.error("Error en handleCulqiPayment:", error);
-            if (error.response) {
-                toast.error(error.response.data.message || "Error en la API");
-            } else if (error.request) {
-                toast.error("No se recibió respuesta del servidor");
-            } else {
-                toast.error("Error interno al procesar la solicitud");
-            }
-        } finally {
-            toast.dismiss(toastId);
+    const handleCulqiPayment = async () => {
+        if (!addressList[selectAddress]) {
+            toast.error("Por favor, selecciona una dirección");
+            return;
         }
-    });
     
-    window.Culqi.on('error', (error) => {
-        console.error("Culqi error:", error);
-        toast.error("Error al procesar el pago con Culqi");
-    });
-
-    // Escuchar el evento 'error' para manejar errores de Culqi
-    window.Culqi.on('error', (error) => {
-        console.error("Culqi error:", error);
-        toast.error("Error al procesar el pago con Culqi");
-    });
-};
-
+        // Verificar si Culqi está cargado
+        if (typeof window.Culqi === 'undefined') {
+            toast.error("Culqi SDK no está cargado correctamente.");
+            return;
+        }
+    
+        // Configurar Culqi
+        window.Culqi.settings({
+            title: 'Emys SHoop',
+            currency: 'PEN', // Moneda en soles peruanos
+            description: 'Compra en Emys SHoop',
+            amount: totalPrice * 100, // Monto en céntimos
+        });
+    
+        // Abrir el formulario de Culqi
+        window.Culqi.open();
+    
+        // Escuchar el evento 'token' para obtener el token generado por Culqi
+        window.Culqi.on('token', async (token) => {
+            console.log("Token generado:", token);
+            const toastId = toast.loading("Procesando pago con Culqi...");
+    
+            try {
+                const response = await Axios({
+                    ...SummaryApi.createCulqiOrder,
+                    data: {
+                        token: token.id,
+                        list_items: cartItemsList,
+                        addressId: addressList[selectAddress]._id,
+                    },
+                });
+    
+                const { data: responseData } = response;
+                if (responseData.success) {
+                    toast.success("¡Pago exitoso!");
+                    navigate('/success'); // Redirigir a la página de éxito
+                } else {
+                    toast.error("Error al procesar el pago con Culqi");
+                }
+            } catch (error) {
+                console.error("Error en handleCulqiPayment:", error);
+                if (error.response) {
+                    toast.error(error.response.data.message || "Error en la API");
+                } else if (error.request) {
+                    toast.error("No se recibió respuesta del servidor");
+                } else {
+                    toast.error("Error interno al procesar la solicitud");
+                }
+            } finally {
+                toast.dismiss(toastId);
+            }
+        });
+    
+        // Escuchar el evento 'error' para manejar errores de Culqi
+        window.Culqi.on('error', (error) => {
+            console.error("Culqi error:", error);
+            toast.error("Error al procesar el pago con Culqi");
+        });
+    };
 
     return (
         <section className='bg-blue-50'>
@@ -221,6 +213,12 @@ const CheckoutPage = () => {
                         >
                             Pay with Culqi
                         </button>
+                        <button
+                            className='py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold'
+                            onClick={handlePayPalPayment}
+                        >
+                            Pay with PayPal
+                        </button>
                     </div>
                 </div>
             </div>
@@ -232,6 +230,5 @@ const CheckoutPage = () => {
         </section>
     );
 };
-
 
 export default CheckoutPage;

@@ -332,22 +332,18 @@ export const createPayPalOrder = async (req, res) => {
 
 
 
+
 export const createCulqiOrder = async (req, res) => {
   try {
-    console.log("Iniciando createCulqiOrder...");
     const { token, list_items, addressId } = req.body;
     const userId = req.userId;
 
-    console.log("Datos recibidos:", { token, list_items, addressId, userId });
-
     // Validación de datos
     if (!token) {
-      console.error("Token de Culqi es requerido.");
       return res.status(400).json({ message: "Token de Culqi es requerido." });
     }
 
     if (!list_items || !Array.isArray(list_items) || list_items.length === 0) {
-      console.error("Lista de items inválida o vacía.");
       return res.status(400).json({ message: "Lista de items inválida o vacía." });
     }
 
@@ -357,10 +353,7 @@ export const createCulqiOrder = async (req, res) => {
       return acc + (product.price * (1 - product.discount / 100) * item.quantity);
     }, 0);
 
-    console.log("Monto total calculado:", totalAmount);
-
     // Crear el cargo en Culqi
-    console.log("Creando cargo en Culqi...");
     const charge = await culqi.charges.create({
       amount: totalAmount * 100, // Culqi espera el monto en céntimos
       currency_code: "PEN", // Moneda (PEN para soles peruanos)
@@ -369,16 +362,12 @@ export const createCulqiOrder = async (req, res) => {
       description: "Compra en Emys SHoop",
     });
 
-    console.log("Cargo creado en Culqi:", charge);
-
     // Guardar la orden en la base de datos
-    console.log("Guardando la orden en la base de datos...");
     const order = new OrderModel({
       userId: userId,
       orderId: charge.id, // ID del cargo en Culqi
       products: await Promise.all(list_items.map(async (item) => {
         const productDetails = await ProductModel.findById(item.productId);
-        console.log("Detalles del producto:", productDetails);
         return {
           productId: productDetails._id,
           product_details: {
@@ -400,15 +389,12 @@ export const createCulqiOrder = async (req, res) => {
     });
 
     await order.save();
-    console.log("Orden guardada en la base de datos:", order);
 
     // Limpiar el carrito del usuario
-    console.log("Limpiando el carrito del usuario...");
     await CartProductModel.deleteMany({ userId: userId });
     await UserModel.updateOne({ _id: userId }, { shopping_cart: [] });
 
     // Responder con la orden creada
-    console.log("Pago procesado exitosamente con Culqi.");
     return res.status(200).json({
       message: "Pago procesado exitosamente con Culqi",
       order: order,
@@ -417,7 +403,6 @@ export const createCulqiOrder = async (req, res) => {
     });
   } catch (error) {
     console.error("Error en createCulqiOrder:", error.message);
-    console.error("Stack trace:", error.stack);
     return res.status(500).json({
       message: error.message || "Error al procesar el pago con Culqi",
       error: true,
