@@ -196,7 +196,7 @@ const SummaryApi = {
     },
    
     createCulqiOrder: {
-        url: '/api/create-culqi-order', // Ruta del backend para 
+        url: '/api/order/create-culqi-order', // Ruta del backend para 
         method: 'post', // Método HTTP
     },
 };

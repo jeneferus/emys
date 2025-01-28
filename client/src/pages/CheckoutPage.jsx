@@ -96,29 +96,35 @@ const CheckoutPage = () => {
     
         // Escuchar el evento 'token' para obtener el token generado por Culqi
         window.Culqi.on('token', async (token) => {
-            console.log("Token generado:", token);
+            console.log("Token generado:", JSON.stringify(token, null, 2)); // Log de depuración en JSON
             const toastId = toast.loading("Procesando pago con Culqi...");
-        
+    
             try {
+                const payload = {
+                    token: token.id,
+                    list_items: cartItemsList,
+                    addressId: addressList[selectAddress]._id,
+                };
+    
+                console.log("Datos enviados al backend:", JSON.stringify(payload, null, 2)); // Log de depuración en JSON
+    
                 const response = await Axios({
                     ...SummaryApi.createCulqiOrder,
-                    data: {
-                        token: token.id,
-                        list_items: cartItemsList,
-                        addressId: addressList[selectAddress]._id,
-                    },
+                    data: payload,
                 });
-        
-                const { data: responseData } = response;
-                if (responseData.success) {
+    
+                console.log("Respuesta del backend:", JSON.stringify(response.data, null, 2)); // Log de depuración en JSON
+    
+                if (response.data.success) {
                     toast.success("¡Pago exitoso!");
                     navigate('/success'); // Redirigir a la página de éxito
                 } else {
                     toast.error("Error al procesar el pago con Culqi");
                 }
             } catch (error) {
-                console.error("Error en handleCulqiPayment:", error);
+                console.error("Error en handleCulqiPayment:", JSON.stringify({ message: error.message, stack: error.stack }, null, 2));
                 if (error.response) {
+                    console.error("Respuesta de error del backend:", JSON.stringify(error.response.data, null, 2)); // Log de depuración en JSON
                     toast.error(error.response.data.message || "Error en la API");
                 } else if (error.request) {
                     toast.error("No se recibió respuesta del servidor");
@@ -129,19 +135,14 @@ const CheckoutPage = () => {
                 toast.dismiss(toastId);
             }
         });
-        
-        window.Culqi.on('error', (error) => {
-            console.error("Culqi error:", error);
-            toast.error("Error al procesar el pago con Culqi");
-        });
     
         // Escuchar el evento 'error' para manejar errores de Culqi
         window.Culqi.on('error', (error) => {
-            console.error("Culqi error:", error);
+            console.error("Culqi error:", JSON.stringify(error, null, 2));
             toast.error("Error al procesar el pago con Culqi");
         });
     };
-
+    
     return (
         <section className='bg-blue-50'>
             <div className='container mx-auto p-4 flex flex-col lg:flex-row w-full gap-5 justify-between'>
