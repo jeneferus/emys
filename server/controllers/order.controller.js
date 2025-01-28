@@ -335,78 +335,81 @@ export const createPayPalOrder = async (req, res) => {
 
 export const createCulqiOrder = async (req, res) => {
   try {
-    const { token, list_items, addressId } = req.body;
-    const userId = req.userId;
+      const { token, list_items, addressId } = req.body;
+      const userId = req.userId;
 
-    // Validación de datos
-    if (!token) {
-      return res.status(400).json({ message: "Token de Culqi es requerido." });
-    }
+      // Validación de datos
+      if (!token) {
+          return res.status(400).json({ message: "Token de Culqi es requerido." });
+      }
 
-    if (!list_items || !Array.isArray(list_items) || list_items.length === 0) {
-      return res.status(400).json({ message: "Lista de items inválida o vacía." });
-    }
+      if (!list_items || !Array.isArray(list_items) || list_items.length === 0) {
+          return res.status(400).json({ message: "Lista de items inválida o vacía." });
+      }
 
-    // Calcular el monto total
-    const totalAmount = list_items.reduce((acc, item) => {
-      const product = item.productId;
-      return acc + (product.price * (1 - product.discount / 100) * item.quantity);
-    }, 0);
+      // Calcular el monto total
+      const totalAmount = list_items.reduce((acc, item) => {
+          const product = item.productId;
+          return acc + (product.price * (1 - product.discount / 100) * item.quantity);
+      }, 0);
 
-    // Crear el cargo en Culqi
-    const charge = await culqi.charges.create({
-      amount: totalAmount * 100, // Culqi espera el monto en céntimos
-      currency_code: "PEN", // Moneda (PEN para soles peruanos)
-      email: req.userEmail, // Email del usuario (debes obtenerlo desde el token JWT o la base de datos)
-      source_id: token, // Token generado por Culqi en el frontend
-      description: "Compra en Emys SHoop",
-    });
+      // Convertir el monto a céntimos
+      const amountInCents = Math.round(totalAmount * 100);
 
-    // Guardar la orden en la base de datos
-    const order = new OrderModel({
-      userId: userId,
-      orderId: charge.id, // ID del cargo en Culqi
-      products: await Promise.all(list_items.map(async (item) => {
-        const productDetails = await ProductModel.findById(item.productId);
-        return {
-          productId: productDetails._id,
-          product_details: {
-            name: productDetails.name,
-            image: productDetails.image,
-            unit_price: productDetails.price,
-            discount: productDetails.discount,
-            quantity: item.quantity,
-            total_price: (productDetails.price * (1 - productDetails.discount / 100) * item.quantity).toFixed(2),
-          },
-        };
-      })),
-      subTotalAmt: totalAmount,
-      totalAmt: totalAmount,
-      payment_status: "COMPLETED",
-      delivery_address: addressId,
-      invoice_receipt: `INV-${new mongoose.Types.ObjectId()}`,
-      metodoDePago: "Culqi",
-    });
+      // Crear el cargo en Culqi
+      const charge = await culqi.charges.create({
+          amount: amountInCents, // Monto en céntimos
+          currency_code: "PEN", // Moneda en soles peruanos
+          email: req.userEmail, // Email del usuario
+          source_id: token, // Token generado por Culqi
+          description: "Compra en Emys SHoop",
+      });
 
-    await order.save();
+      // Guardar la orden en la base de datos
+      const order = new OrderModel({
+          userId: userId,
+          orderId: charge.id, // ID del cargo en Culqi
+          products: await Promise.all(list_items.map(async (item) => {
+              const productDetails = await ProductModel.findById(item.productId);
+              return {
+                  productId: productDetails._id,
+                  product_details: {
+                      name: productDetails.name,
+                      image: productDetails.image,
+                      unit_price: productDetails.price,
+                      discount: productDetails.discount,
+                      quantity: item.quantity,
+                      total_price: (productDetails.price * (1 - productDetails.discount / 100) * item.quantity).toFixed(2),
+                  },
+              };
+          })),
+          subTotalAmt: totalAmount,
+          totalAmt: totalAmount,
+          payment_status: "COMPLETED",
+          delivery_address: addressId,
+          invoice_receipt: `INV-${new mongoose.Types.ObjectId()}`,
+          metodoDePago: "Culqi",
+      });
 
-    // Limpiar el carrito del usuario
-    await CartProductModel.deleteMany({ userId: userId });
-    await UserModel.updateOne({ _id: userId }, { shopping_cart: [] });
+      await order.save();
 
-    // Responder con la orden creada
-    return res.status(200).json({
-      message: "Pago procesado exitosamente con Culqi",
-      order: order,
-      error: false,
-      success: true,
-    });
+      // Limpiar el carrito del usuario
+      await CartProductModel.deleteMany({ userId: userId });
+      await UserModel.updateOne({ _id: userId }, { shopping_cart: [] });
+
+      // Responder con la orden creada
+      return res.status(200).json({
+          message: "Pago procesado exitosamente con Culqi",
+          order: order,
+          error: false,
+          success: true,
+      });
   } catch (error) {
-    console.error("Error en createCulqiOrder:", error.message);
-    return res.status(500).json({
-      message: error.message || "Error al procesar el pago con Culqi",
-      error: true,
-      success: false,
-    });
+      console.error("Error en createCulqiOrder:", error.message);
+      return res.status(500).json({
+          message: error.message || "Error al procesar el pago con Culqi",
+          error: true,
+          success: false,
+      });
   }
 };

@@ -94,7 +94,7 @@ const CheckoutPage = () => {
         // Abrir el formulario de Culqi
         window.Culqi.open();
     
-        // Escuchar el evento 'token' para obtener el token generado por Culqi
+        // Escuchar el evento 'token'
         window.Culqi.on('token', async (token) => {
             console.log("Token generado:", token);
             const toastId = toast.loading("Procesando pago con Culqi...");
@@ -118,22 +118,16 @@ const CheckoutPage = () => {
                 }
             } catch (error) {
                 console.error("Error en handleCulqiPayment:", error);
-                if (error.response) {
-                    toast.error(error.response.data.message || "Error en la API");
-                } else if (error.request) {
-                    toast.error("No se recibió respuesta del servidor");
-                } else {
-                    toast.error("Error interno al procesar la solicitud");
-                }
+                toast.error(error.message || "Error al procesar el pago");
             } finally {
                 toast.dismiss(toastId);
             }
         });
     
-        // Escuchar el evento 'error' para manejar errores de Culqi
+        // Escuchar el evento 'error'
         window.Culqi.on('error', (error) => {
             console.error("Culqi error:", error);
-            toast.error("Error al procesar el pago con Culqi");
+            toast.error(`Error al procesar el pago con Culqi: ${error.user_message}`);
         });
     };
 
