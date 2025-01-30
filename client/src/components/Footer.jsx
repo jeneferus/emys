@@ -19,22 +19,7 @@ const Footer = () => {
               >
                 <FaFacebook className='text-xl' />
               </a>
-              <a
-                href=''
-                target='_blank'
-                rel='noopener noreferrer'
-                className='text-gray-600 hover:text-primary-500 transition duration-300'
-              >
-                <FaInstagram className='text-xl' />
-              </a>
-              <a
-                href=''
-                target='_blank'
-                rel='noopener noreferrer'
-                className='text-gray-600 hover:text-primary-500 transition duration-300'
-              >
-                <FaLinkedin className='text-xl' />
-              </a>
+  
             </div>
           </div>
 
